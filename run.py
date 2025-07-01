@@ -25,7 +25,9 @@ def preprocess_data(df: DataFrame):
     """ предобработка данных датасета """
     df.dropna(inplace=True)
 
-    X = df['text']
+    df['content'] = df['title'] + ' ' + df['text']
+
+    X = df['content']
     Y = df['label']
 
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
