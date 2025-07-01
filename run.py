@@ -48,7 +48,7 @@ def train_model(X_train_tfidf, y_train):
     print("Модель обучена.")
     return pac
 
-def evaluate_model(model, X_test_tfidf, y_test):
+def evaluate_model(model, X_test_tfidf, y_test, save_path='errors_matrix.png'):
     """Оценка качества модели"""
     y_pred = model.predict(X_test_tfidf)
     accuracy = accuracy_score(y_test, y_pred)
@@ -65,31 +65,29 @@ def evaluate_model(model, X_test_tfidf, y_test):
     plt.xlabel("Предсказанные метки")
     plt.ylabel("Истинные метки")
     plt.title("Матрица ошибок")
-    plt.show()
+    plt.tight_layout()
+    plt.savefig(save_path)  # Сохраняем график в файл
+    plt.close()
+    print(f"График сохранён: {save_path}")
 
-def visualize_top_features(model, vectorizer, top_n=10):
-    """Визуализация наиболее важных слов"""
+def visualize_top_features(model, vectorizer, top_n=10, save_path='top_features.png'):
+    """Визуализация и сохранение наиболее важных слов"""
     feature_names = np.array(vectorizer.get_feature_names_out())
     coefs = model.coef_[0]
 
-    # Сортировка самых важных слов
     top = np.argsort(coefs)[-top_n:]
     bottom = np.argsort(coefs)[:top_n]
 
-    print("\nНаиболее характерные слова для 'FAKE':")
-    print(feature_names[bottom])
-
-    print("\nНаиболее характерные слова для 'REAL':")
-    print(feature_names[top])
-
-    # График
     plt.figure(figsize=(12, 6))
     plt.barh(range(top_n), coefs[top], align='center', color='green', label='REAL')
     plt.barh(range(top_n), coefs[bottom], align='center', color='red', label='FAKE')
     plt.yticks(range(top_n), feature_names[top])
     plt.title("Наиболее информативные слова")
     plt.legend()
-    plt.show()
+    plt.tight_layout()
+    plt.savefig(save_path)  # Сохраняем график в файл
+    plt.close()  # Закрываем, чтобы не мешало
+    print(f"График сохранён: {save_path}")
 
 
 def run():
